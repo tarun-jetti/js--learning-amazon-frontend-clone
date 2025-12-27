@@ -23,6 +23,15 @@ const products = [{
         stars: 45
     },
     price: 799
+},
+{
+    image:'images/products/backpack.jpg',
+    name:'Black Backpack',
+    rating:{
+        count:450,
+        stars:35
+    },
+    price:2443
 }
 ];
 let productGrid = '';
