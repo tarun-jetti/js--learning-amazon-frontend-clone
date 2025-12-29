@@ -13,7 +13,7 @@ products.forEach((product) => {
 
             <div class="product-rating-container">
                 <img class="product-rating-stars"
-                src="images/ratings/rating-${product.rating.stars*10}.png">
+                src="images/ratings/rating-${product.rating.stars * 10}.png">
                 <div class="product-rating-count link-primary">
                 ${product.rating.count}
                 </div>
@@ -24,7 +24,7 @@ products.forEach((product) => {
             </div>
 
             <div class="product-quantity-container">
-                <select>
+                <select class="product-quantity-select">
                 <option selected value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -51,6 +51,47 @@ products.forEach((product) => {
             </div>`;
     productGrid += HTML;
 });
-document.querySelector('.products-grid').innerHTML =productGrid;
+document.querySelector('.products-grid').innerHTML = productGrid;
+const addToCart = document.querySelectorAll(".add-to-cart-button");
+const checkoutGrid = document.querySelector(".order-summary");
+let cartData= JSON.parse(localStorage.getItem('cartData'))||[];
+
+addToCart.forEach((button) => {
+    button.addEventListener('click', () => {
+        const container = button.closest(".product-container");
+        const addedToCart = container.querySelector(".added-to-cart");
+        
+        // 1. Handle "Added" checkmark animation
+        if (addedToCart) {
+            addedToCart.style.opacity = 1;
+            setTimeout(() => {
+                addedToCart.style.opacity = 0;
+            }, 2000);
+        }
+
+        // 2. Get Product Data
+        const productName = container.querySelector(".product-name").innerText;
+        const productPrice = container.querySelector(".product-price").innerText;
+        const productImage = container.querySelector(".product-image").src;
+        
+        // Correct way to get the quantity from a dropdown/input
+        const quantitySelector = container.querySelector(".product-quantity-select");
+        const quantity = quantitySelector ? quantitySelector.value : 1;
+        cartData.push({
+            name:productName,
+            price :productPrice,
+            image:productImage,
+            number:quantity
+        });
+        localStorage.setItem("cartData",JSON.stringify(cartData));
+        
+
+        
+    });
+
+    
+});
+  
+
 
 
