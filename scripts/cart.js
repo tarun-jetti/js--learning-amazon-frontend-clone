@@ -1,7 +1,8 @@
-const cart=JSON.parse(localStorage.getItem('cartData'))||[];
+let cart=JSON.parse(localStorage.getItem('cartData'))||[];
 let cartGrid='';
 cart.forEach((cartItems)=> {
-    const cartHTML=`<div class="cart-item-container">
+  const cleanId = cartItems.name.replace(/\s+/g, '-');
+  const cartHTML=`<div class="cart-item-container-${cleanId}">
             <div class="delivery-date">
               Delivery date: Tuesday, June 21
             </div>
@@ -21,12 +22,12 @@ cart.forEach((cartItems)=> {
                   <span>
                     Quantity: <span class="quantity-label">${cartItems.number}</span>
                   </span>
-                  <span class="update-quantity-link link-primary">
+                  <button class="update-quantity-link ">
                     Update
-                  </span>
-                  <span class="delete-quantity-link link-primary">
+                  </button>
+                  <button class="delete-quantity-link" data-product-id="${cartItems.name}">
                     Delete
-                  </span>
+                  </button>
                 </div>
               </div>
 
@@ -76,6 +77,35 @@ cart.forEach((cartItems)=> {
               </div>
             </div>
           </div>`;
-    cartGrid+=cartHTML;
+  cartGrid +=cartHTML;
+
 });
+let numberOfItems=0;
+cart.forEach((cartItems)=> {
+    numberOfItems++;
+});
+document.querySelector(".return-to-home-link").innerText=numberOfItems;
+
 document.querySelector('.order-summary').innerHTML=cartGrid;
+
+function removeItem(productName) {
+  // 1. Filter the array using the real name
+  cart = cart.filter(item => item.name !== productName);
+  localStorage.setItem('cartData', JSON.stringify(cart));
+
+  // 2. Remove from DOM using the "cleaned" name
+  const cleanId = productName.replace(/\s+/g, '-');
+  const container = document.querySelector(`.cart-item-container-${cleanId}`);
+  if (container) {
+    container.remove();
+  }
+}
+
+document.querySelector('.order-summary').addEventListener('click', (event) => {
+  const deleteButton = event.target.closest('.delete-quantity-link');
+  if (deleteButton) {
+    // 3. Match the data attribute name here
+    const productName = deleteButton.dataset.productId;
+    removeItem(productName);
+  }
+});

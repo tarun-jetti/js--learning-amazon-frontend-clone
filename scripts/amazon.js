@@ -1,4 +1,4 @@
-
+import { products } from "../data/products.js";
 let productGrid = '';
 products.forEach((product) => {
     const HTML = `<div class="product-container">
@@ -77,12 +77,18 @@ addToCart.forEach((button) => {
         // Correct way to get the quantity from a dropdown/input
         const quantitySelector = container.querySelector(".product-quantity-select");
         const quantity = quantitySelector ? quantitySelector.value : 1;
-        cartData.push({
-            name:productName,
-            price :productPrice,
-            image:productImage,
-            number:quantity
-        });
+        let matchingItem=cartData.find(item => item.name === productName);
+        if(matchingItem){
+            matchingItem.number = Number(matchingItem.number)+quantity;
+        }
+        else{
+            cartData.push({
+                name:productName,
+                price :productPrice,
+                image:productImage,
+                number:quantity
+            });
+        }
         localStorage.setItem("cartData",JSON.stringify(cartData));
         
 
@@ -91,6 +97,12 @@ addToCart.forEach((button) => {
 
     
 });
+const cart=JSON.parse(localStorage.getItem('cartData'))||[];
+let cartGrid='';
+cart.forEach((cartItems)=> {
+    document.querySelector('.cart-quantity').innerText++;
+});
+
   
 
 
