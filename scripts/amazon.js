@@ -51,6 +51,14 @@ products.forEach((product) => {
             </div>`;
     productGrid += HTML;
 });
+function cartNumber(){
+    let cart = JSON.parse(localStorage.getItem('cartData')) || [];
+    let numberOfProducts=0;
+    cart.forEach((cartItems)=> {
+    numberOfProducts++;
+});
+    document.querySelector('.cart-quantity').innerText=numberOfProducts;
+}
 document.querySelector('.products-grid').innerHTML = productGrid;
 const addToCart = document.querySelectorAll(".add-to-cart-button");
 const checkoutGrid = document.querySelector(".order-summary");
@@ -79,7 +87,7 @@ addToCart.forEach((button) => {
         const quantity = quantitySelector ? quantitySelector.value : 1;
         let matchingItem=cartData.find(item => item.name === productName);
         if(matchingItem){
-            matchingItem.number = Number(matchingItem.number)+quantity;
+            matchingItem.number = parseInt(matchingItem.number)+parseInt(quantity);
         }
         else{
             cartData.push({
@@ -90,19 +98,15 @@ addToCart.forEach((button) => {
             });
         }
         localStorage.setItem("cartData",JSON.stringify(cartData));
+        cartNumber();
         
 
         
     });
 
+
     
 });
-const cart=JSON.parse(localStorage.getItem('cartData'))||[];
-let cartGrid='';
-cart.forEach((cartItems)=> {
-    document.querySelector('.cart-quantity').innerText++;
-});
-
   
 
 

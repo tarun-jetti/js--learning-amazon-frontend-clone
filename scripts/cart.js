@@ -1,8 +1,9 @@
-let cart=JSON.parse(localStorage.getItem('cartData'))||[];
-let cartGrid='';
-cart.forEach((cartItems)=> {
+let cart = JSON.parse(localStorage.getItem('cartData')) || [];
+let cartGrid = '';
+
+cart.forEach((cartItems) => {
   const cleanId = cartItems.name.replace(/\s+/g, '-');
-  const cartHTML=`<div class="cart-item-container-${cleanId}">
+  const cartHTML = `<div class="cart-item-container-${cleanId}">
             <div class="delivery-date">
               Delivery date: Tuesday, June 21
             </div>
@@ -77,16 +78,55 @@ cart.forEach((cartItems)=> {
               </div>
             </div>
           </div>`;
-  cartGrid +=cartHTML;
+  cartGrid += cartHTML;
 
 });
-let numberOfItems=0;
-cart.forEach((cartItems)=> {
+function rerender(){
+  let numberOfItems = 0;
+  let itemsCost = 0
+  cart.forEach((cartItems) => {
     numberOfItems++;
-});
-document.querySelector(".return-to-home-link").innerText=numberOfItems;
+    itemsCost = (parseFloat(itemsCost) || 0) + (parseInt(cartItems.number) || 0) * (parseFloat(cartItems.price.replace('$', '')) || 0);
 
-document.querySelector('.order-summary').innerHTML=cartGrid;
+  });
+  document.querySelector(".return-to-home-link").innerText = numberOfItems;
+
+
+  document.querySelector('.payment-summary').innerHTML = `<div class="payment-summary-title">
+              Order Summary
+            </div>
+
+            <div class="payment-summary-row">
+              <div>Items (${numberOfItems}):</div>
+              <div class="payment-summary-money">$${itemsCost}</div>
+            </div>
+
+            <div class="payment-summary-row">
+              <div>Shipping &amp; handling:</div>
+              <div class="payment-summary-money">$4.99</div>
+            </div>
+
+            <div class="payment-summary-row subtotal-row">
+              <div>Total before tax:</div>
+              <div class="payment-summary-money">$${itemsCost+4.99}</div>
+            </div>
+
+            <div class="payment-summary-row">
+              <div>Estimated tax (10%):</div>
+              <div class="payment-summary-money">$${(itemsCost+4.99)/10}</div>
+            </div>
+
+            <div class="payment-summary-row total-row">
+              <div>Order total:</div>
+              <div class="payment-summary-money">$${itemsCost+4.99+(itemsCost+4.99)/10}</div>
+            </div>
+
+            <button class="place-order-button button-primary">
+              Place your order
+            </button>`;
+}
+
+document.querySelector('.order-summary').innerHTML = cartGrid;
 
 function removeItem(productName) {
   // 1. Filter the array using the real name
@@ -98,6 +138,7 @@ function removeItem(productName) {
   const container = document.querySelector(`.cart-item-container-${cleanId}`);
   if (container) {
     container.remove();
+    rerender();
   }
 }
 
@@ -109,3 +150,4 @@ document.querySelector('.order-summary').addEventListener('click', (event) => {
     removeItem(productName);
   }
 });
+rerender();
