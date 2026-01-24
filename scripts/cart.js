@@ -87,8 +87,9 @@ function rerender(){
   cart.forEach((cartItems) => {
     numberOfItems++;
     itemsCost = (parseFloat(itemsCost) || 0) + (parseInt(cartItems.number) || 0) * (parseFloat(cartItems.price.replace('$', '')) || 0);
-
+    itemsCost=Number(itemsCost);
   });
+  const tax= (numberOfItems > 0) ? 4.99 : 0;
   document.querySelector(".return-to-home-link").innerText = numberOfItems;
 
 
@@ -98,27 +99,24 @@ function rerender(){
 
             <div class="payment-summary-row">
               <div>Items (${numberOfItems}):</div>
-              <div class="payment-summary-money">$${itemsCost}</div>
+              <div class="payment-summary-money">$${itemsCost.toFixed(2)}</div>
             </div>
 
             <div class="payment-summary-row">
               <div>Shipping &amp; handling:</div>
-              <div class="payment-summary-money">$4.99</div>
+              <div class="payment-summary-money">$${tax}</div>
             </div>
 
-            <div class="payment-summary-row subtotal-row">
-              <div>Total before tax:</div>
-              <div class="payment-summary-money">$${itemsCost+4.99}</div>
-            </div>
+    
 
             <div class="payment-summary-row">
               <div>Estimated tax (10%):</div>
-              <div class="payment-summary-money">$${(itemsCost+4.99)/10}</div>
+              <div class="payment-summary-money">$${((itemsCost+tax)/10).toFixed(2)}</div>
             </div>
 
             <div class="payment-summary-row total-row">
               <div>Order total:</div>
-              <div class="payment-summary-money">$${itemsCost+4.99+(itemsCost+4.99)/10}</div>
+              <div class="payment-summary-money">$${(itemsCost+tax+(itemsCost+tax)/10).toFixed(2)}</div>
             </div>
 
             <button class="place-order-button button-primary">
